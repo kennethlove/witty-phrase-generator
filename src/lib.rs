@@ -1,4 +1,4 @@
-use rand::prelude::{ ThreadRng, thread_rng, IteratorRandom };
+use rand::prelude::{ ThreadRng, IndexedRandom, IteratorRandom };
 use rand::Rng;
 use rand::seq::SliceRandom;
 
@@ -25,7 +25,7 @@ impl WPGen {
         let words_nouns        = words_nouns       .lines().collect::<Vec<&'static str>>();
 
         WPGen { 
-            rng: RefCell::new(thread_rng()),
+            rng: RefCell::new(ThreadRng::default()),
             words_intensifiers,
             words_adjectives  ,
             words_nouns       ,
@@ -177,7 +177,7 @@ impl WPGen {
         ret.reserve_exact(count);
         for _ in 0..count {
             ret.append(&mut loop {
-                let char = (*self.rng.borrow_mut()).gen_range(b'a'..b'z'+1) as char;
+                let char = (*self.rng.borrow_mut()).random_range(b'a'..b'z'+1) as char;
                 if let Some(p) = self.generic(words, 1, len_min, len_max, word_len_max, Some(char)) {
                     break p
                 }
